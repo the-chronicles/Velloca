@@ -37,11 +37,11 @@ export default function Onboarding() {
               resizeMode="contain"
             />
 
-            <Text className="text-[38px] font-saans font-semibold text-center mb-2">
+            <Text className="text-4xl font-saans font-semibold text-center mb-2">
               Budget for what matters
             </Text>
 
-            <Text className="text-[#8A8A8A] font-saans px-10 text-lg text-center leading-6">
+            <Text className="text-[#8A8A8A] font-saans px-4 text-lg text-center leading-6">
               Create specific values for your goals. Set a hard limit for each
               and we handle the rest.
             </Text>
@@ -117,7 +117,7 @@ export default function Onboarding() {
         </View>
       </View>
 
-      <Text className="text-[#8A8A8A] font-saans text-base text-center px-28 pb-6">
+      <Text className="text-[#8A8A8A] font-saans text-base text-center px-20 pb-6">
         By continuing, you agree to accept our Terms of Use and Privacy Policy
       </Text>
     </View>
