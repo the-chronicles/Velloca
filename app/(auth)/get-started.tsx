@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 
+
 const { height } = Dimensions.get("window");
 
 export default function LetsGetStarted() {
@@ -161,7 +162,7 @@ export default function LetsGetStarted() {
                 setShowModal(false);
                 router.push("/(auth)/verify-email");
               }}
-              className="flex-1 bg-[#211FFE] py-4 rounded-full"
+              className="flex-1 bg-[#211FFE] py-5 rounded-full"
             >
               <Text className="text-center text-white font-saans text-lg">
                 Confirm
