@@ -17,7 +17,7 @@ export default function Splash() {
     <View className="flex-1 items-center justify-center bg-white">
       <Image
         source={require("../assets/images/vellocaicon.png")}
-        className="w-10 h-10"
+        className="w-12 h-12"
       />
     </View>
   );

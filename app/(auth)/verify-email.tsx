@@ -37,7 +37,7 @@ export default function VerifyEmail() {
       return;
     }
 
-    router.push("/(profile-onboarding)/usage");
+    router.replace("/(profile-onboarding)/name");
   };
 
   useEffect(() => {
