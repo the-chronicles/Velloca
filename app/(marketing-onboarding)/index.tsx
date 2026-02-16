@@ -108,7 +108,8 @@ export default function Onboarding() {
         <View className="flex-1">
           <View
             className="bg-[#211FFE] py-5 rounded-full"
-            onTouchEnd={() => router.push("/(auth)/get-started")}
+            // onTouchEnd={() => router.push("/(auth)/get-started")}
+            onTouchEnd={() => router.push("/(tabs)/home")}
           >
             <Text className="text-white text-center font-semibold">
               Open Account
