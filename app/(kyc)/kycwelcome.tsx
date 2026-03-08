@@ -1,17 +1,23 @@
 import { useRouter } from "expo-router";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import RemixIcon from "react-native-remix-icon";
 
 export default function KycWelcome() {
   const router = useRouter();
 
   return (
-    <ScrollView
+    <KeyboardAvoidingView
       className="flex-1 bg-white"
-      contentContainerStyle={{ paddingBottom: 24 }}
-      showsVerticalScrollIndicator={false}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View className="px-6 pt-16">
+      <View className="px-6 pt-16 justify-between">
         {/* Top row: back + logo */}
         <View className="flex-row items-center justify-between mb-8">
           <Pressable
@@ -52,7 +58,7 @@ export default function KycWelcome() {
         </Text>
 
         {/* You'll need card */}
-        <View className="bg-[#F7F7F7] rounded-3xl px-6 py-6 mb-10">
+        <View className="bg-[#F7F7F7] rounded-3xl px-6 py-6 mb-5">
           <Text className="text-xl font-saans font-semibold mb-6">
             You&apos;ll need:
           </Text>
@@ -90,7 +96,7 @@ export default function KycWelcome() {
           </Text>
         </Pressable>
       </View>
-    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

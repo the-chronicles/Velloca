@@ -32,7 +32,7 @@ export default function Home() {
 
         <Pressable
           onPress={() => router.push("/(kyc)/kycwelcome")}
-          className="bg-[#211FFE] rounded-3xl px-5 py-5 flex-row items-center justify-between mb-8"
+          className="bg-[#211FFE] rounded-3xl px-5 py-5 flex-row items-center justify-between mb-6"
         >
           <View className="mr-4">
             <View className="w-14 h-14 rounded-full border-4 border-white/50 items-center justify-center">
@@ -54,53 +54,62 @@ export default function Home() {
           <RemixIcon name="arrow-right-s-line" size={26} color="#fff" />
         </Pressable>
 
-        <View className="border border-[#F0F0F0] rounded-3xl overflow-hidden mb-8">
-          <View className="px-6 py-5 border-b border-[#F0F0F0]">
-            <Text className="text-[#A3A3A3] font-saans text-xl mb-4">
-              Total Balance
+        <View className="mb-8 ">
+          <Text className="text-[#A3A3A3] font-saans text-xl">
+            Nuel&apos;s Wallet
+          </Text>
+          <Text className="text-5xl leading-[78px] font-saans font-semibold text-black">
+            $0.00
+          </Text>
+        </View>
+
+        <View className="flex-row gap-10 mb-10">
+          <ActionIcon label="Add" icon="add-line" />
+          <ActionIcon label="Send" icon="arrow-right-up-line" />
+          <ActionIcon label="Budget" icon="stack-fill" />
+        </View>
+
+        <View className="flex-row gap-4 mb-8">
+          <SummaryCard
+            icon="wallet-3-fill"
+            iconBg="#211FFE"
+            title="Available"
+            amount="$0"
+          />
+          <SummaryCard
+            icon="lock-2-fill"
+            iconBg="#FFA21A"
+            title="Allocated"
+            amount="$0"
+          />
+        </View>
+
+        <View className="mb-10">
+          <Text className="text-black font-saans text-2xl font-semibold mb-6">
+            Active budgets
+          </Text>
+
+          <View className="border border-[#F0F0F0] rounded-3xl px-5 py-6 items-center">
+            <Text className="text-black font-saans text-[21px] font-semibold mb-2">
+              No active budgets
             </Text>
-            <Text className="text-6xl font-saans font-semibold">$0.00</Text>
-          </View>
-
-          <View className="px-6 py-6">
-            <View className="flex-row justify-between">
-              <ActionIcon label="Add" icon="add-line" />
-              <ActionIcon label="Budget" icon="stack-fill" />
-              <ActionIcon label="Send" icon="arrow-right-up-line" />
-              <ActionIcon label="More" icon="layout-grid-fill" />
-            </View>
-          </View>
-
-          <View className="flex-row border-t border-[#F0F0F0]">
-            <View className="flex-1 px-6 py-5 border-r border-[#F0F0F0]">
-              <Text className="text-[#A3A3A3] text-lg font-saans mb-2">
-                Available
-              </Text>
-              <Text className="text-3xl font-saans font-semibold">$0.00</Text>
-            </View>
-            <View className="flex-1 px-6 py-5">
-              <Text className="text-[#A3A3A3] text-lg font-saans mb-2">
-                Allocated
-              </Text>
-              <Text className="text-3xl font-saans font-semibold">$0.00</Text>
-            </View>
+            <Text className="text-center text-[#A3A3A3] font-saans text-md">
+              Create your first budget to start tracking{"\n"}expenses
+            </Text>
           </View>
         </View>
 
-        <View className="border border-[#F0F0F0] rounded-3xl overflow-hidden">
-          <View className="px-6 py-5 border-b border-[#F0F0F0]">
-            <Text className="text-[#A3A3A3] font-saans text-xl">
-              Active budgets
-            </Text>
-          </View>
+        <View>
+          <Text className="text-black font-saans text-2xl font-semibold mb-4">
+            Transactions
+          </Text>
 
-          <View className="px-6 py-14 items-center">
-            <RemixIcon name="stack-fill" size={28} color="#9CA3AF" />
-            <Text className="mt-4 text-xl font-saans font-semibold">
-              No active budgets
+          <View className="border border-[#F0F0F0] rounded-3xl px-5 py-6 items-center">
+            <Text className="text-black font-saans text-[21px] font-semibold mb-2">
+              No transactions yet
             </Text>
-            <Text className="mt-2 text-center text-[#A3A3A3] font-saans">
-              Create your first budget to start tracking{"\n"}expenses
+            <Text className="text-center text-[#A3A3A3] font-saans text-md">
+              Your transaction history will appear here
             </Text>
           </View>
         </View>
@@ -112,10 +121,38 @@ export default function Home() {
 function ActionIcon({ label, icon }: { label: string; icon: string }) {
   return (
     <Pressable className="items-center">
-      <View className="w-16 h-16 rounded-full bg-[#F0F0F0] items-center justify-center mb-2">
-        <RemixIcon name={icon as any} size={24} color="#111827" />
+      <View className="w-20 h-20 rounded-full bg-[#F0F0F0] items-center justify-center mb-2">
+        <RemixIcon name={icon as any} size={26} color="#111827" />
       </View>
       <Text className="text-[#A3A3A3] font-saans text-lg">{label}</Text>
     </Pressable>
+  );
+}
+
+function SummaryCard({
+  icon,
+  iconBg,
+  title,
+  amount,
+}: {
+  icon: string;
+  iconBg: string;
+  title: string;
+  amount: string;
+}) {
+  return (
+    <View className="flex-1 border border-[#F0F0F0] rounded-[28px] p-6">
+      <View
+        className="w-10 h-10 rounded-full items-center justify-center mb-4"
+        style={{ backgroundColor: iconBg }}
+      >
+        <RemixIcon name={icon as any} size={15} color="#fff" />
+      </View>
+
+      <Text className="text-[#A3A3A3] font-saans text-xl mb-3">{title}</Text>
+      <Text className="text-black font-saans text-3xl font-semibold">
+        {amount}
+      </Text>
+    </View>
   );
 }
