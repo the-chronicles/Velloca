@@ -31,15 +31,17 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/velloca.svg",
-          "imageWidth": 100,
+          "image": "./assets/images/splashscreen-icon.png",
+          "imageWidth": 120,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#211FFE",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#211FFE"
           }
         }
-      ]
+      ],
+      "expo-web-browser",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

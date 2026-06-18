@@ -1,19 +1,24 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Image,
+  ImageBackground,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
   Text,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Onboarding() {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const [page, setPage] = useState(0);
+  const insets = useSafeAreaInsets();
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const index = Math.round(e.nativeEvent.contentOffset.x / width);
@@ -21,106 +26,126 @@ export default function Onboarding() {
   };
 
   return (
-    <View className="flex-1 bg-white ">
+    <View className="flex-1 bg-white">
+
       <ScrollView
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
+        className="flex-1"
       >
-        <View style={{ width }} className="px-6 py-16 flex-1">
-          <View className="items-center">
-            <Image
-              source={require("../../assets/images/logo.png")}
-              className="w-32 h-12 mb-2"
-              resizeMode="contain"
-            />
 
-            <Text className="text-4xl font-saans font-semibold text-center mb-2">
-              Budget for what matters
+        <ImageBackground
+          source={require("../../assets/images/o1.png")}
+          style={{ width, height: "100%" }}
+          imageStyle={{
+            resizeMode: "contain",
+            width: "100%",
+            height: "125%",
+            position: "absolute",
+            bottom: 0,
+          }}
+        >
+          <LinearGradient
+            colors={["transparent", "rgba(255,255,255,0)", "rgba(255,255,255,1)"]}
+            locations={[0, 0.6, 0.75]}
+            style={{
+              flex: 1,
+              paddingTop: insets.top + 50,
+              paddingHorizontal: 24,
+            }}
+          >
+            <Text className="text-[38px] font-saans font-semibold text-black leading-[44px]">
+              Budget for what{"\n"}matters
             </Text>
+          </LinearGradient>
+        </ImageBackground>
 
-            <Text className="text-[#8A8A8A] font-saans px-4 text-lg text-center leading-6">
-              Create specific values for your goals. Set a hard limit for each
-              and we handle the rest.
+
+        <ImageBackground
+          source={require("../../assets/images/o2.png")}
+          style={{ width, height: "100%" }}
+          imageStyle={{
+            resizeMode: "contain",
+            width: "100%",
+            height: "90%",
+            position: "absolute",
+            top: 200,
+          }}
+        >
+          <LinearGradient
+            colors={["transparent", "rgba(255,255,255,0)", "rgba(255,255,255,1)"]}
+            locations={[0, 0.6, 0.75]}
+            style={{
+              flex: 1,
+              paddingTop: insets.top + 50,
+              paddingHorizontal: 24,
+            }}
+          >
+            <Text className="text-[38px] font-saans font-semibold text-black leading-[44px] tracking-tight">
+              Total control, in real-{"\n"}time.
             </Text>
-          </View>
-
-          <View className="flex-1 justify-center">
-            <Image
-              source={require("../../assets/images/oth-2.png")}
-              className="w-full h-full"
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-
-        <View style={{ width }} className="px-6 py-16 justify-between flex-1">
-          <View className="items-center">
-            <Image
-              source={require("../../assets/images/logo.png")}
-              className="w-32 h-12 mb-6"
-              resizeMode="contain"
-            />
-
-            <Text className="text-[38px] font-saans font-semibold text-center mb-2">
-              Total control, in real-time
-            </Text>
-
-            <Text className="text-[#8A8A8A] font-saans text-lg px-10 text-center leading-6">
-              Stop checking your balance after you spend. Velloca blocks the
-              overspend before it happens
-            </Text>
-          </View>
-
-          <View className="flex-1 justify-center">
-            <Image
-              source={require("../../assets/images/oth.png")}
-              className="w-full h-full"
-              resizeMode="contain"
-            />
-          </View>
-        </View>
+          </LinearGradient>
+        </ImageBackground>
       </ScrollView>
 
-      <View className="flex-row justify-center gap-2 mb-10">
-        {[0, 1].map((i) => (
-          <View
-            key={i}
-            className={`h-2 rounded-full transition-all ${
-              page === i ? "w-6 bg-[#f0f0f0]" : "w-2 bg-gray-300"
-            }`}
-          />
-        ))}
+
+      <View
+        style={{
+          position: "absolute",
+          top: insets.top + 4,
+          left: 24,
+          right: 24,
+        }}
+        pointerEvents="none"
+      >
+        <Image
+          source={require("../../assets/images/logo.png")}
+          className="w-32 h-8"
+          resizeMode="contain"
+          style={{ alignSelf: "flex-start" }}
+        />
       </View>
 
-      <View className="flex-row gap-4 px-6 pb-5">
-        <View className="flex-1">
-          <View
-            className="bg-[#F0F0F0] py-5 rounded-full"
-            onTouchEnd={() => router.push("/(auth)/get-started")}
-          >
-            <Text className="text-black text-center font-medium">Log in</Text>
-          </View>
-        </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: insets.bottom + 8,
+          left: 32,
+          right: 32,
+        }}
+      >
 
-        <View className="flex-1">
-          <View
-            className="bg-[#211FFE] py-5 rounded-full"
-            // onTouchEnd={() => router.push("/(auth)/get-started")}
-            onTouchEnd={() => router.push("/(tabs)/home")}
+        <View className="flex-row gap-4 mb-5">
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/home")}
+            className="flex-1 bg-[#F0F0F0] py-[18px] rounded-full"
+            activeOpacity={0.8}
           >
-            <Text className="text-white text-center font-semibold">
+            <Text className="text-black text-center font-semibold text-base">
+              Log in
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+
+            onPress={() => router.push("/(auth)/get-started")}
+            className="flex-1 bg-[#211FFE] py-[18px] rounded-full"
+            activeOpacity={0.9}
+          >
+            <Text className="text-white text-center font-semibold text-base">
               Open Account
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
-      </View>
 
-      <Text className="text-[#8A8A8A] font-saans text-base text-center px-20 pb-6">
-        By continuing, you agree to accept our Terms of Use and Privacy Policy
-      </Text>
+
+        <Text className="text-[#8A8A8A] font-saans text-[13px] text-center leading-5 px-4">
+          By continuing, you agree to accept our{"\n"}Terms of Use and Privacy Policy
+        </Text>
+      </View>
     </View>
   );
 }

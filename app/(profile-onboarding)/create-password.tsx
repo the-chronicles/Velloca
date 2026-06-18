@@ -2,12 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    Text,
-    TextInput,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 const rules = {
@@ -24,6 +24,9 @@ export default function CreatePassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [secure, setSecure] = useState(true);
+  const [secureConfirm, setSecureConfirm] = useState(true);
+
+  const showMismatch = confirm.length > 0 && password.length > 0 && password !== confirm;
 
   const validation = useMemo(
     () => ({
@@ -63,7 +66,9 @@ export default function CreatePassword() {
             onChangeText={setPassword}
             secureTextEntry={secure}
             placeholder="Add a password"
-            className="bg-gray-100 rounded-xl px-6 py-5 pr-14 text-lg font-saans"
+            placeholderTextColor="#B0B0B0"
+            className="bg-[#F5F5F5] rounded-lg px-6 py-5 pr-14 font-saans"
+            style={{ fontSize: secure && password.length > 0 ? 20 : 15, letterSpacing: secure && password.length > 0 ? 4 : 0 }}
           />
 
           <Pressable
@@ -102,34 +107,52 @@ export default function CreatePassword() {
           />
         </View>
 
-        <View className="mb-10">
-          <TextInput
-            value={confirm}
-            onChangeText={setConfirm}
-            secureTextEntry
-            placeholder="Confirm password"
-            className={`rounded-xl px-6 py-5 text-lg font-saans ${
-              confirm.length === 0
-                ? "bg-gray-100"
+        <View className="mb-4">
+          <View className="relative">
+            <TextInput
+              value={confirm}
+              onChangeText={setConfirm}
+              secureTextEntry={secureConfirm}
+              placeholder="Confirm password"
+              placeholderTextColor="#B0B0B0"
+              className={`rounded-lg px-6 py-5 pr-14 font-saans ${confirm.length === 0
+                ? "bg-[#F5F5F5]"
                 : validation.match
-                  ? "bg-green-50"
-                  : "bg-red-50"
-            }`}
-          />
+                  ? "bg-[#F0FFF4]"
+                  : "bg-[#FFF5F5]"
+                }`}
+              style={{ fontSize: secureConfirm && confirm.length > 0 ? 20 : 15, letterSpacing: secureConfirm && confirm.length > 0 ? 4 : 0 }}
+            />
+
+            <Pressable
+              onPress={() => setSecureConfirm(!secureConfirm)}
+              className="absolute right-5 top-1/2 -translate-y-1/2"
+            >
+              <Ionicons
+                name={secureConfirm ? "eye-outline" : "eye-off-outline"}
+                size={22}
+                color="#9CA3AF"
+              />
+            </Pressable>
+          </View>
+
+          {showMismatch && (
+            <Text className="text-[#EF4444] text-[13px] font-saans mt-2">
+              Passwords do not match
+            </Text>
+          )}
         </View>
 
         <View className="mt-auto mb-6">
           <Pressable
             disabled={!allValid}
-            onPress={() => router.push("/(profile-onboarding)/welcome")}
-            className={`py-5 rounded-full ${
-              allValid ? "bg-[#211FFE]" : "bg-gray-200"
-            }`}
+            onPress={() => router.push("/(profile-onboarding)/usage")}
+            className={`py-5 rounded-full ${allValid ? "bg-[#211FFE]" : "bg-gray-200"
+              }`}
           >
             <Text
-              className={`text-center text-lg font-semibold ${
-                allValid ? "text-white" : "text-gray-400"
-              }`}
+              className={`text-center text-lg font-semibold ${allValid ? "text-white" : "text-gray-400"
+                }`}
             >
               Continue
             </Text>
@@ -167,13 +190,12 @@ function Rule({
 
       {/* Label */}
       <Text
-        className={`text-base font-saans ${
-          showSuccess
-            ? "text-green-600"
-            : showError
-              ? "text-red-500"
-              : "text-gray-400"
-        }`}
+        className={`text-base font-saans ${showSuccess
+          ? "text-green-600"
+          : showError
+            ? "text-red-500"
+            : "text-gray-400"
+          }`}
       >
         {label}
       </Text>
