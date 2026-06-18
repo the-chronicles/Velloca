@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -11,34 +10,26 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const OTP_LENGTH = 6;
+const OTP_LENGTH = 4;
+const CORRECT_CODE = "1234";
 
-export default function VerifyEmail() {
+export default function VerifyCode() {
   const router = useRouter();
+  const { phone } = useLocalSearchParams<{ phone: string }>();
+  const insets = useSafeAreaInsets();
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [showError, setShowError] = useState(false);
   const inputs = useRef<TextInput[]>([]);
 
-  const isOtpComplete = otp.every((digit) => digit !== "");
-
-  const RESEND_TIME = 60;
-
+  const RESEND_TIME = 15;
   const [secondsLeft, setSecondsLeft] = useState(RESEND_TIME);
   const [canResend, setCanResend] = useState(false);
 
-  const [showError, setShowError] = useState(false);
-
-  const handleVerify = () => {
-    const code = otp.join("");
-
-    // temporary code
-    if (code !== "123456") {
-      setShowError(true);
-      return;
-    }
-
-    router.replace("/(profile-onboarding)/name");
-  };
+  const isOtpComplete = otp.every((digit) => digit !== "");
+  const isCodeCorrect = otp.join("") === CORRECT_CODE;
 
   useEffect(() => {
     if (secondsLeft === 0) {
@@ -53,86 +44,121 @@ export default function VerifyEmail() {
     return () => clearInterval(timer);
   }, [secondsLeft]);
 
+  useEffect(() => {
+    if (isOtpComplete && !isCodeCorrect) {
+      setShowError(true);
+    } else {
+      setShowError(false);
+    }
+  }, [otp]);
+
   const handleResend = () => {
     if (!canResend) return;
-
     setSecondsLeft(RESEND_TIME);
     setCanResend(false);
+    setOtp(Array(OTP_LENGTH).fill(""));
+    setShowError(false);
+    inputs.current[0]?.focus();
+  };
+
+  const handleContinue = () => {
+    if (!isOtpComplete || !isCodeCorrect) return;
+    router.push("/(profile-onboarding)/create-password");
+  };
+
+  const getBorderColor = (index: number) => {
+    if (showError) return "#EF4444";
+    if (focusedIndex === index) return "#211FFE";
+    if (otp[index] !== "") return "#211FFE";
+    return "transparent";
   };
 
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-white"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={80}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 px-6 pt-14 pb-6 justify-between">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View
+          className="flex-1 px-6 pb-6 justify-between"
+          style={{ paddingTop: insets.top + 12 }}
+        >
           <View>
             <Pressable
               onPress={() => router.back()}
-              className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center mb-8"
+              className="w-10 h-10 rounded-full bg-[#F5F5F5] items-center justify-center mb-8"
             >
               <Ionicons name="arrow-back" size={20} color="#000" />
             </Pressable>
-            <Text className="text-4xl font-saans mb-2">Verify your email</Text>
-            <Text className="text-gray-400 text-lg font-saans mb-8">
-              We sent a 6-digit code to name@email.com
+
+            <Text className="text-[30px] font-saans font-bold text-black leading-[38px] mb-2">
+              Enter the 4-digit code
             </Text>
 
-            <View className="flex-row items-center mb-6">
+            <Text className="text-[#9E9E9E] text-[15px] font-saans leading-[22px] mb-8">
+              Sent to you at {phone || "+2348033899221"}
+            </Text>
+
+            <View className="flex-row gap-3 mb-4">
               {otp.map((digit, index) => (
-                <View key={index} className="flex-row items-center">
-                  <TextInput
-                    ref={(ref) => {
-                      if (ref) inputs.current[index] = ref;
-                    }}
-                    value={digit}
-                    maxLength={1}
-                    keyboardType="number-pad"
-                    secureTextEntry
-                    className="w-12 h-12 bg-[#F7F7F7] rounded-xl text-center text-xl mx-1"
-                    onChangeText={(text) => {
-                      if (!/^\d?$/.test(text)) return;
+                <TextInput
+                  key={index}
+                  ref={(ref) => {
+                    if (ref) inputs.current[index] = ref;
+                  }}
+                  value={digit}
+                  maxLength={1}
+                  keyboardType="number-pad"
+                  className="text-[22px] font-saans text-black text-center"
+                  style={{
+                    width: 64,
+                    height: 64,
+                    backgroundColor: "#F5F5F5",
+                    borderRadius: 16,
+                    borderWidth: 2,
+                    borderColor: getBorderColor(index),
+                  }}
+                  onFocus={() => setFocusedIndex(index)}
+                  onBlur={() => setFocusedIndex(null)}
+                  onChangeText={(text) => {
+                    if (!/^\d?$/.test(text)) return;
 
-                      const newOtp = [...otp];
-                      newOtp[index] = text;
-                      setOtp(newOtp);
+                    const newOtp = [...otp];
+                    newOtp[index] = text;
+                    setOtp(newOtp);
 
-                      if (text && index < OTP_LENGTH - 1) {
-                        inputs.current[index + 1]?.focus();
-                      }
-                    }}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (
-                        nativeEvent.key === "Backspace" &&
-                        !otp[index] &&
-                        index > 0
-                      ) {
-                        inputs.current[index - 1]?.focus();
-                      }
-                    }}
-                  />
-
-                  {index === 2 && (
-                    <Text className="mx-2 text-xl text-gray-400">–</Text>
-                  )}
-                </View>
+                    if (text && index < OTP_LENGTH - 1) {
+                      inputs.current[index + 1]?.focus();
+                    }
+                  }}
+                  onKeyPress={({ nativeEvent }) => {
+                    if (
+                      nativeEvent.key === "Backspace" &&
+                      !otp[index] &&
+                      index > 0
+                    ) {
+                      inputs.current[index - 1]?.focus();
+                    }
+                  }}
+                />
               ))}
             </View>
 
-            <Text className="text-left font-saans text-lg text-gray-400 mb-6">
+            <Text className="text-[#9E9E9E] text-[15px] font-saans">
               {canResend ? (
                 <Text
                   onPress={handleResend}
-                  className="font-saans text-black underline"
+                  className="text-black font-semibold underline"
                 >
                   Resend code
                 </Text>
               ) : (
                 <>
                   Resend code in{" "}
-                  <Text className="font-saans text-black underline">
+                  <Text className="text-black font-semibold underline">
                     00:{secondsLeft.toString().padStart(2, "0")}
                   </Text>
                 </>
@@ -141,51 +167,26 @@ export default function VerifyEmail() {
           </View>
 
           <Pressable
-            disabled={!isOtpComplete}
-            onPress={handleVerify}
+            disabled={!isOtpComplete || !isCodeCorrect}
+            onPress={handleContinue}
             className={`py-5 rounded-full ${
-              isOtpComplete ? "bg-[#211FFE]" : "bg-gray-200"
+              isOtpComplete && isCodeCorrect
+                ? "bg-[#211FFE]"
+                : "bg-[#F0F0F0]"
             }`}
           >
-            <Text className="text-white text-center font-semibold">
+            <Text
+              className={`text-center font-saans text-[16px] font-semibold ${
+                isOtpComplete && isCodeCorrect
+                  ? "text-white"
+                  : "text-[#B0B0B0]"
+              }`}
+            >
               Continue
             </Text>
           </Pressable>
         </View>
       </ScrollView>
-
-      {showError && (
-        <View className="absolute inset-0 z-50">
-          <Pressable className="flex-1" onPress={() => setShowError(false)}>
-            <BlurView intensity={20} tint="dark" className="flex-1" />
-          </Pressable>
-
-          <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
-            <View className="items-center mb-4">
-              <View className="w-12 h-12 rounded-full bg-red-100 items-center justify-center">
-                <Text className="text-red-500 text-2xl">✕</Text>
-              </View>
-            </View>
-
-            <Text className="text-xl font-semibold text-center mb-2">
-              Incorrect code entered
-            </Text>
-
-            <Text className="text-gray-400 text-center mb-6">
-              Please check the code and try again
-            </Text>
-
-            <Pressable
-              onPress={() => setShowError(false)}
-              className="bg-[#211FFE] py-4 rounded-full"
-            >
-              <Text className="text-white text-center font-semibold">
-                Got it
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      )}
     </KeyboardAvoidingView>
   );
 }

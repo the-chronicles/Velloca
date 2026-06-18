@@ -1,9 +1,10 @@
 import { BlurView } from "expo-blur";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Easing,
   Image,
   Modal,
   Pressable,
@@ -17,9 +18,39 @@ const { height } = Dimensions.get("window");
 
 export default function Home() {
   const router = useRouter();
+  const { showSkeleton } = useLocalSearchParams<{ showSkeleton?: string }>();
+  const [isLoading, setIsLoading] = useState(showSkeleton === "true");
   const [showLinkModal, setShowLinkModal] = useState(false);
 
   const slideAnim = useRef(new Animated.Value(height)).current;
+  const pulseAnim = useRef(new Animated.Value(0.4)).current;
+
+  useEffect(() => {
+    if (isLoading) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 800,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 0.4,
+            duration: 800,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 2500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     if (showLinkModal) {
@@ -36,6 +67,72 @@ export default function Home() {
     }
   }, [showLinkModal]);
 
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-white px-6 pt-16">
+        <View className="flex-row items-center justify-between mb-6">
+          <Animated.View
+            style={{ opacity: pulseAnim }}
+            className="w-10 h-10 rounded-full bg-[#EBEBEB]"
+          />
+          <Animated.View
+            style={{ opacity: pulseAnim }}
+            className="w-12 h-12 rounded-full bg-[#EBEBEB]"
+          />
+        </View>
+
+        <Animated.View
+          style={{ opacity: pulseAnim }}
+          className="h-24 rounded-3xl bg-[#EBEBEB] mb-6"
+        />
+
+        <Animated.View
+          style={{ opacity: pulseAnim }}
+          className="h-5 w-32 rounded-md bg-[#EBEBEB] mb-3"
+        />
+        <Animated.View
+          style={{ opacity: pulseAnim }}
+          className="h-10 w-48 rounded-md bg-[#EBEBEB] mb-8"
+        />
+
+        <View className="flex-row gap-8 mb-8">
+          {[1, 2, 3].map((i) => (
+            <View key={i} className="items-center">
+              <Animated.View
+                style={{ opacity: pulseAnim }}
+                className="w-[52px] h-[52px] rounded-full bg-[#EBEBEB] mb-2"
+              />
+              <Animated.View
+                style={{ opacity: pulseAnim }}
+                className="h-3 w-10 rounded-md bg-[#EBEBEB]"
+              />
+            </View>
+          ))}
+        </View>
+
+        <View className="flex-row gap-4 mb-8">
+          <Animated.View
+            style={{ opacity: pulseAnim }}
+            className="flex-1 h-36 rounded-[28px] bg-[#EBEBEB]"
+          />
+          <Animated.View
+            style={{ opacity: pulseAnim }}
+            className="flex-1 h-36 rounded-[28px] bg-[#EBEBEB]"
+          />
+        </View>
+
+        <Animated.View
+          style={{ opacity: pulseAnim }}
+          className="h-6 w-40 rounded-md bg-[#EBEBEB] mb-6"
+        />
+        <Animated.View
+          style={{ opacity: pulseAnim }}
+          className="h-28 rounded-3xl bg-[#EBEBEB]"
+        />
+      </View>
+    );
+  }
+
   return (
     <>
       <ScrollView
@@ -45,62 +142,58 @@ export default function Home() {
       >
         <View className="px-6 pt-16">
           <View className="flex-row items-center justify-between mb-6">
-            <Pressable className="w-12 h-12 rounded-full bg-[#F0F0F0] items-center justify-center overflow-hidden">
-              <RemixIcon name="user-3-line" size={22} color="#111827" />
-            </Pressable>
-
             <Image
               source={require("@/assets/images/vellocaicon.png")}
               className="w-10 h-10"
               resizeMode="contain"
             />
 
-            <Pressable className="w-12 h-12 rounded-full bg-[#F0F0F0] items-center justify-center">
-              <RemixIcon name="settings-3-line" size={22} color="#111827" />
+            <Pressable className="w-12 h-12 rounded-full bg-[#F0F0F0] items-center justify-center overflow-hidden">
+              <RemixIcon name="user-3-line" size={22} color="#111827" />
             </Pressable>
           </View>
 
           <Pressable
             onPress={() => router.push("/(kyc)/kycwelcome")}
-            className="bg-[#211FFE] rounded-3xl px-5 py-5 flex-row items-center justify-between mb-6"
+            className="bg-[#F5F5F5] rounded-3xl px-5 py-5 flex-row items-center justify-between mb-6"
           >
             <View className="mr-4">
-              <View className="w-14 h-14 rounded-full border-4 border-white/50 items-center justify-center">
-                <View className="w-11 h-11 rounded-full bg-white items-center justify-center">
-                  <Text className="text-black font-semibold">1/4</Text>
+              <View className="w-14 h-14 rounded-full border-[3px] border-[#211FFE]/30 items-center justify-center">
+                <View className="w-10 h-10 rounded-full bg-white items-center justify-center">
+                  <Text className="text-black font-saans font-semibold text-[13px]">1/4</Text>
                 </View>
               </View>
             </View>
 
             <View className="flex-1">
-              <Text className="text-white font-saans text-xl mb-1">
+              <Text className="text-[#211FFE] font-saans text-[17px] font-semibold mb-0.5">
                 Start budgeting seamlessly
               </Text>
-              <Text className="text-white/80 font-saans text-base">
+              <Text className="text-[#141414] font-saans text-[14px]">
                 Hi John, complete your KYC
               </Text>
             </View>
 
-            <RemixIcon name="arrow-right-s-line" size={26} color="#fff" />
+            <RemixIcon name="arrow-right-s-line" size={24} color="#111827" />
           </Pressable>
 
-          <View className="mb-8 ">
-            <Text className="text-[#A3A3A3] font-saans text-xl">
+          <View className="mb-8">
+            <Text className="text-[#A3A3A3] font-saans text-[17px]">
               Nuel&apos;s Wallet
             </Text>
-            <Text className="text-5xl leading-[78px] font-saans font-semibold text-black">
+            <Text className="text-[42px] leading-[56px] font-saans font-semibold text-black">
               $0.00
             </Text>
           </View>
 
-          <View className="flex-row gap-10 mb-10">
+          <View className="flex-row gap-10 mb-8">
             <ActionIcon
               label="Add"
               icon="add-line"
               onPress={() => setShowLinkModal(true)}
             />
             <ActionIcon label="Send" icon="arrow-right-up-line" />
-            <ActionIcon label="Budget" icon="stack-fill" />
+            <ActionIcon label="Budget" icon="pie-chart-2-fill" />
           </View>
 
           <View className="flex-row gap-4 mb-8">
@@ -119,30 +212,30 @@ export default function Home() {
           </View>
 
           <View className="mb-10">
-            <Text className="text-black font-saans text-2xl font-semibold mb-6">
+            <Text className="text-black font-saans text-[20px] font-semibold mb-5">
               Active budgets
             </Text>
 
-            <View className="border border-[#F0F0F0] rounded-3xl px-5 py-6 items-center">
-              <Text className="text-black font-saans text-[21px] font-semibold mb-2">
+            <View className="bg-white rounded-3xl px-5 py-6 items-center">
+              <Text className="text-black font-saans text-[17px] font-semibold mb-1">
                 No active budgets
               </Text>
-              <Text className="text-center text-[#A3A3A3] font-saans text-md">
+              <Text className="text-center text-[#A3A3A3] font-saans text-[14px] leading-[20px]">
                 Create your first budget to start tracking{"\n"}expenses
               </Text>
             </View>
           </View>
 
-          <View>
-            <Text className="text-black font-saans text-2xl font-semibold mb-4">
+          <View className="mb-4">
+            <Text className="text-black font-saans text-[20px] font-semibold mb-5">
               Transactions
             </Text>
 
-            <View className="border border-[#F0F0F0] rounded-3xl px-5 py-6 items-center">
-              <Text className="text-black font-saans text-[21px] font-semibold mb-2">
+            <View className="bg-white rounded-3xl px-5 py-6 items-center">
+              <Text className="text-black font-saans text-[17px] font-semibold mb-1">
                 No transactions yet
               </Text>
-              <Text className="text-center text-[#A3A3A3] font-saans text-md">
+              <Text className="text-center text-[#A3A3A3] font-saans text-[14px] leading-[20px]">
                 Your transaction history will appear here
               </Text>
             </View>
@@ -214,10 +307,10 @@ function ActionIcon({
 }) {
   return (
     <Pressable className="items-center" onPress={onPress}>
-      <View className="w-20 h-20 rounded-full bg-[#F0F0F0] items-center justify-center mb-2">
-        <RemixIcon name={icon as any} size={26} color="#111827" />
+      <View className="w-[52px] h-[52px] rounded-full bg-[#F0F0F0] items-center justify-center mb-2">
+        <RemixIcon name={icon as any} size={22} color="#111827" />
       </View>
-      <Text className="text-[#A3A3A3] font-saans text-lg">{label}</Text>
+      <Text className="text-[#A3A3A3] font-saans text-[14px]">{label}</Text>
     </Pressable>
   );
 }
@@ -234,7 +327,7 @@ function SummaryCard({
   amount: string;
 }) {
   return (
-    <View className="flex-1 border border-[#F0F0F0] rounded-[28px] p-6">
+    <View className="flex-1 bg-[#F5F5F5] rounded-[28px] p-6">
       <View
         className="w-10 h-10 rounded-full items-center justify-center mb-4"
         style={{ backgroundColor: iconBg }}
@@ -242,8 +335,8 @@ function SummaryCard({
         <RemixIcon name={icon as any} size={15} color="#fff" />
       </View>
 
-      <Text className="text-[#A3A3A3] font-saans text-xl mb-3">{title}</Text>
-      <Text className="text-black font-saans text-3xl font-semibold">
+      <Text className="text-[#A3A3A3] font-saans text-[16px] mb-2">{title}</Text>
+      <Text className="text-black font-saans text-[26px] font-semibold">
         {amount}
       </Text>
     </View>

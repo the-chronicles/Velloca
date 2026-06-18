@@ -22,7 +22,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <Icon size={20} name="home-smile-2-line" color={color} />
+            <Icon size={20} name="home-7-fill" color={color} />
           ),
         }}
       />
@@ -31,11 +31,11 @@ export default function TabLayout() {
         options={{
           title: "Budgets",
           tabBarIcon: ({ color }) => (
-            <Icon size={20} name="stack-line" color={color} />
+            <Icon size={20} name="pie-chart-fill" color={color} />
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="analytics"
         options={{
           title: "Analytics",
@@ -52,13 +52,13 @@ export default function TabLayout() {
             <Icon size={20} name="send-plane-line" color={color} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
-        name="profile"
+        name="card"
         options={{
-          title: "Profile",
+          title: "Card",
           tabBarIcon: ({ color }) => (
-            <Icon size={20} name="user-4-line" color={color} />
+            <Icon size={20} name="bank-card-fill" color={color} />
           ),
         }}
       />

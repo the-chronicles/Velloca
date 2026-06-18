@@ -2,12 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
 } from "react-native";
 
 const EVERYDAY_NEEDS = [
@@ -114,15 +114,13 @@ export default function Usage() {
       <View className="absolute bottom-6 left-6 right-6">
         <Pressable
           disabled={!isValid}
-          onPress={() => router.push("/(profile-onboarding)/create-password")}
-          className={`py-5 rounded-full ${
-            isValid ? "bg-[#211FFE]" : "bg-gray-200"
-          }`}
+          onPress={() => router.push("/(profile-onboarding)/nin")}
+          className={`py-5 rounded-full ${isValid ? "bg-[#211FFE]" : "bg-gray-200"
+            }`}
         >
           <Text
-            className={`text-center font-semibold text-lg ${
-              isValid ? "text-white" : "text-gray-400"
-            }`}
+            className={`text-center font-semibold text-lg ${isValid ? "text-white" : "text-gray-400"
+              }`}
           >
             Continue
           </Text>
@@ -146,9 +144,8 @@ function UsagePill({
   return (
     <Pressable
       onPress={onPress}
-      className={`flex-row items-center px-5 py-4 rounded-full ${
-        selected ? "bg-[#211FFE]" : "bg-gray-100"
-      }`}
+      className={`flex-row items-center px-5 py-4 rounded-full ${selected ? "bg-[#211FFE]" : "bg-gray-100"
+        }`}
     >
       {selected && (
         <Ionicons

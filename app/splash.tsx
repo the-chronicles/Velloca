@@ -14,10 +14,11 @@ export default function Splash() {
   }, []);
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center bg-[#211FFE]">
       <Image
-        source={require("../assets/images/vellocaicon.png")}
-        className="w-12 h-12"
+        source={require("../assets/images/splashscreen-icon.png")}
+        className="w-[120px] h-[120px]"
+        resizeMode="contain"
       />
     </View>
   );
